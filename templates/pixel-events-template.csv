@@ -1,0 +1,9 @@
+internal_event,meta_event,tiktok_event,snapchat_event,fire_browser,fire_capi,dedup_field
+PageView,PageView,PageView,PAGE_VIEW,true,false,event_id
+ViewContent,ViewContent,ViewContent,VIEW_CONTENT,true,true,event_id
+AddToCart,AddToCart,AddToCart,ADD_CART,true,true,event_id
+InitiateCheckout,InitiateCheckout,InitiateCheckout,START_CHECKOUT,true,true,event_id
+Purchase,Purchase,CompletePayment,PURCHASE,true,true,purchase_event_id
+UpsellView,CustomEvent,CustomEvent,CUSTOM_EVENT,true,false,event_id
+UpsellAccept,Purchase,CompletePayment,PURCHASE,true,true,event_id
+UpsellDecline,CustomEvent,CustomEvent,CUSTOM_EVENT,true,false,event_id

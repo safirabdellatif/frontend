@@ -1,0 +1,17 @@
+node_modules/
+.next/
+dist/
+build/
+.env
+.env.local
+.env.production
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+*.pyc
+*.pyo
+*.egg-info/
+.DS_Store
+Thumbs.db
