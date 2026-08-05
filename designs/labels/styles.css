@@ -1,0 +1,279 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Montserrat:wght@700;800;900&family=Playfair+Display:wght@600&display=swap');
+
+:root {
+  --green: #1B3D1A;
+  --green-dark: #0F2610;
+  --green-wave: #1A3317;
+  --gold: #C9A030;
+  --gold-dark: #9A6B1A;
+  --gold-light: #E8C96A;
+  --charcoal: #111111;
+  --gray-bar: #A8A8A8;
+  --white: #FFFFFF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Montserrat', 'Cairo', sans-serif;
+  background: #ddd;
+  padding: 1.5rem;
+}
+
+.page-note {
+  text-align: center;
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.label-frame {
+  background: #fff;
+  padding: 6px;
+  box-shadow: 0 2px 16px rgba(0,0,0,.15);
+}
+
+.label-frame .tag {
+  display: block;
+  text-align: center;
+  font-size: 0.65rem;
+  color: #888;
+  font-family: 'Cairo', sans-serif;
+  margin-top: 4px;
+}
+
+/* ═══ FRONT — 9 × 6.5 cm (same recommended width) ═══ */
+.label-front {
+  width: 9cm;
+  height: 6.5cm;
+  background: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+.label-front .wave {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 42%;
+}
+
+.label-front .top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0.35cm;
+}
+
+/* Brand badge — like South Moon */
+.badge {
+  background: var(--green);
+  border-radius: 5px;
+  padding: 0.12cm 0.5cm 0.1cm;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.28cm;
+}
+
+.badge .moon-arc {
+  width: 1.2cm;
+  height: 0.1cm;
+  margin-bottom: 0.04cm;
+}
+
+.badge .brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 10pt;
+  color: var(--white);
+  letter-spacing: 0.03em;
+}
+
+/* Product title — 3 bold lines */
+.title-block { text-align: center; margin-bottom: 0.15cm; }
+
+.title-block .t {
+  display: block;
+  font-weight: 900;
+  font-size: 11.5pt;
+  letter-spacing: 0.06em;
+  line-height: 1.12;
+  color: var(--charcoal);
+  text-transform: uppercase;
+}
+
+/* Grey subtitle bar */
+.sub-bar {
+  background: var(--gray-bar);
+  padding: 0.06cm 0.3cm;
+  border-radius: 1px;
+}
+
+.sub-bar span {
+  font-size: 6.5pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+/* Bottom graphics row */
+.bottom-gfx {
+  position: absolute;
+  bottom: 0.38cm;
+  left: 0; right: 0;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 0.35cm;
+}
+
+.honey-art { width: 2.4cm; height: 1.7cm; }
+
+.seal-art { width: 1.6cm; height: 1.6cm; margin-bottom: 0.05cm; }
+
+.net {
+  position: absolute;
+  bottom: 0.1cm;
+  left: 0; right: 0;
+  z-index: 4;
+  text-align: center;
+  font-size: 6pt;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.08em;
+}
+
+/* ═══ BACK — 9 × 6.5 cm (recommended size) ═══ */
+.label-back {
+  width: 9cm;
+  height: 6.5cm;
+  background: var(--white);
+  display: grid;
+  grid-template-columns: 2.35cm 1fr 2.35cm;
+  gap: 0.2cm;
+  padding: 0.38cm 0.32cm;
+  font-family: 'Cairo', sans-serif;
+  font-size: 5.3pt;
+  line-height: 1.42;
+  color: var(--charcoal);
+}
+
+.label-back h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 5.8pt;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid var(--charcoal);
+  padding-bottom: 0.07cm;
+  margin-bottom: 0.12cm;
+}
+
+.col-mid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 0.15cm;
+}
+
+/* Corner-bracket logo box — like template */
+.logo-frame {
+  width: 2.5cm;
+  height: 1.05cm;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.22cm;
+}
+
+.logo-frame .corner {
+  position: absolute;
+  width: 0.22cm;
+  height: 0.22cm;
+  border: 1.5px solid var(--charcoal);
+}
+
+.logo-frame .tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+.logo-frame .tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+.logo-frame .bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+.logo-frame .br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+.logo-frame .logo-text {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 7.5pt;
+  color: var(--green);
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.mid-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 7.5pt;
+  line-height: 1.18;
+  text-transform: uppercase;
+  margin-bottom: 0.15cm;
+}
+
+.mid-desc {
+  font-size: 5.3pt;
+  color: #444;
+  flex: 1;
+}
+
+.mid-vol {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 7pt;
+  font-weight: 700;
+  margin-top: 0.15cm;
+}
+
+.icons {
+  display: flex;
+  gap: 0.2cm;
+  margin-top: 0.25cm;
+  align-items: center;
+}
+
+.icons svg { width: 0.42cm; height: 0.42cm; }
+
+.pao-wrap {
+  position: relative;
+  width: 0.5cm;
+  height: 0.5cm;
+}
+
+.pao-wrap span {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4pt;
+  font-weight: 800;
+}
+
+@media print {
+  @page { size: A4; margin: 1cm; }
+  body { background: white; padding: 0; }
+  .page-note, .label-frame .tag { display: none; }
+  .label-frame { box-shadow: none; padding: 0; page-break-inside: avoid; margin-bottom: 0.8cm; }
+  .label-front, .label-back {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
