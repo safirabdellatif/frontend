@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-teal: #0F5F5C;
+  --brand-dark: #073B3A;
+  --brand-mint: #EAF7F4;
+  --brand-sand: #F7EFE3;
+  --brand-cream: #FFF9F0;
+  --brand-gold: #C89B3C;
+  --brand-charcoal: #1E2424;
+  --brand-gray: #6B7474;
+}
+
+html {
+  direction: rtl;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'IBM Plex Sans Arabic', 'Noto Kufi Arabic', Arial, sans-serif;
+  background-color: var(--brand-cream);
+  color: var(--brand-charcoal);
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-brand-teal text-white font-semibold rounded-2xl px-6 py-3 hover:bg-brand-dark transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-teal focus:ring-offset-2;
+  }
+  .btn-secondary {
+    @apply border-2 border-brand-teal text-brand-teal font-semibold rounded-2xl px-6 py-3 hover:bg-brand-mint transition-colors duration-200;
+  }
+  .card {
+    @apply bg-white rounded-3xl shadow-card p-6;
+  }
+  .section-padding {
+    @apply py-12 md:py-20;
+  }
+  .container-max {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}

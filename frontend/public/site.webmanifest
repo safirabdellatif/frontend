@@ -1,0 +1,27 @@
+{
+  "name": "سَنَدي",
+  "short_name": "mysanad",
+  "description": "Pharmacy-grade beauty and care from MySanad.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFBF9",
+  "theme_color": "#0A4D4A",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
