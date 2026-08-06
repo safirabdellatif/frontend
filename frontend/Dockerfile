@@ -1,12 +1,12 @@
 FROM node:22-alpine AS deps
 WORKDIR /app
-COPY package*.json ./
+COPY frontend/package*.json ./
 RUN npm ci
 
 FROM node:22-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY frontend/ .
 
 ARG NEXT_PUBLIC_API_BASE_URL=/api
 ARG NEXT_PUBLIC_SITE_URL=https://mysanad.shop
