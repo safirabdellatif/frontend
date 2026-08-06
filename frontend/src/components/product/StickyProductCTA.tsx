@@ -30,15 +30,11 @@ export function StickyProductCTA({
         >
           <button
             onClick={onAddToCart}
-            className="w-full btn-primary flex items-center justify-center gap-3 py-4 text-base"
+            className="w-full btn-primary flex items-center justify-center gap-3 py-4 text-lg shadow-lg"
           >
-            <ShoppingBag className="w-5 h-5" />
-            <span>أضيفي العرض للسلة</span>
-            <span className="font-bold">{formatSARCompact(selectedOffer.price)}</span>
+            <ShoppingBag className="w-6 h-6" />
+            {`اطلب الآن — ${formatSARCompact(selectedOffer.price)}`}
           </button>
-          <p className="text-xs text-center text-brand-gray mt-2">
-            الدفع عند الاستلام وتأكيد قبل الشحن
-          </p>
         </motion.div>
       )}
     </AnimatePresence>
