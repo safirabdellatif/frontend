@@ -769,7 +769,7 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="تواصل عبر واتساب"
-        className="fixed bottom-6 left-4 z-40 flex items-center gap-2 bg-[#25D366] text-white rounded-full shadow-lg hover:bg-[#1ebe5d] transition-colors px-4 py-3 text-sm font-bold"
+        className="fixed bottom-6 right-4 z-40 flex items-center gap-2 bg-[#25D366] text-white rounded-full shadow-lg hover:bg-[#1ebe5d] transition-colors px-4 py-3 text-sm font-bold"
       >
         {/* WhatsApp SVG icon */}
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 flex-shrink-0">
