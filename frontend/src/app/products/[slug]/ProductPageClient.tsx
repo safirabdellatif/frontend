@@ -7,6 +7,7 @@ import Link from "next/link";
 import type { Product, ProductOffer } from "@/content/products";
 import { PRODUCTS } from "@/content/products";
 import { useCartStore } from "@/stores/cart-store";
+import { useCheckoutStore } from "@/stores/checkout-store";
 import { OfferSelector } from "@/components/product/OfferSelector";
 import { StickyProductCTA } from "@/components/product/StickyProductCTA";
 import { ImagePlaceholder } from "@/components/product/ImagePlaceholder";
@@ -148,7 +149,8 @@ const USAGE_PROTOCOL: Record<string, UsageProtocol> = {
 };
 
 export function ProductPageClient({ product }: ProductPageClientProps) {
-  const { addItem, openCart } = useCartStore();
+  const { addItem } = useCartStore();
+  const { setStep } = useCheckoutStore();
   const defaultOffer = product.offers.find((o) => o.defaultSelected) ?? product.offers[0];
   const [selectedOffer, setSelectedOffer] = useState<ProductOffer>(defaultOffer);
   const [showSticky, setShowSticky] = useState(false);
@@ -173,7 +175,7 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
       source: "product_page",
     });
     trackAddToCart(product.id, selectedOffer.price, eventId);
-    openCart();
+    setStep("form");
   };
 
   const productReviews = REVIEWS.filter(

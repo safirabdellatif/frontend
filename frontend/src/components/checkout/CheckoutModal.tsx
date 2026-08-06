@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { X, ShieldCheck, Truck, Award } from "lucide-react";
+import { X, ShieldCheck, Truck } from "lucide-react";
 import { useCartStore } from "@/stores/cart-store";
 import { useCheckoutStore } from "@/stores/checkout-store";
 import { isValidSaudiPhone } from "@/lib/phone";
@@ -14,8 +14,6 @@ import { getStoredAttribution } from "@/lib/attribution";
 import { generateEventId, generateSessionId } from "@/lib/events";
 import { trackInitiateCheckout, trackPurchase } from "@/lib/analytics";
 import { formatSARCompact } from "@/lib/money";
-import type { ProductId } from "@/content/products";
-import { ProductThumbnail } from "@/components/product/ProductThumbnail";
 import { UpsellModal } from "./UpsellModal";
 
 const schema = z.object({
@@ -230,12 +228,15 @@ export function CheckoutModal() {
             transition={{ type: "spring", damping: 25 }}
             className="fixed inset-0 flex items-end md:items-center justify-center z-50 p-0 md:p-4"
           >
-            <div className="bg-white w-full md:max-w-md rounded-t-3xl md:rounded-3xl shadow-2xl p-6 md:p-8 max-h-[95vh] overflow-y-auto">
+            <div className="bg-white w-full md:max-w-sm rounded-t-3xl md:rounded-3xl shadow-2xl p-5 md:p-6 max-h-[95vh] overflow-y-auto">
               {/* Header */}
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-2xl font-extrabold text-brand-charcoal">إتمام الطلب بأمان</h2>
-                  <p className="text-sm font-bold text-brand-teal mt-1">خطوة واحدة وتصلك العناية اللي تستاهلينها</p>
+                  <h2 className="text-xl font-extrabold text-brand-charcoal">أكملي طلبك</h2>
+                  <div className="flex items-center gap-3 mt-1 text-xs text-brand-gray font-medium">
+                    <span className="flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-green-600" /> الدفع عند الاستلام</span>
+                    <span className="flex items-center gap-1"><Truck className="w-3.5 h-3.5 text-brand-teal" /> توصيل 2-4 أيام</span>
+                  </div>
                 </div>
                 <button
                   onClick={handleClose}
@@ -243,94 +244,60 @@ export function CheckoutModal() {
                   className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
                   disabled={step === "submitting"}
                 >
-                  <X className="w-6 h-6 text-gray-400" />
+                  <X className="w-5 h-5 text-gray-400" />
                 </button>
               </div>
 
-              {/* Order summary */}
-              <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 mb-6 shadow-inner">
-                <div className="space-y-3">
-                  {items.map((item) => (
-                    <div key={item.productId} className="flex items-center gap-3">
-                      <ProductThumbnail
-                        productId={item.productId as ProductId}
-                        className="w-14 h-14"
-                      />
-                      <span className="flex-1 text-brand-charcoal font-medium">{item.productName}</span>
-                      <span className="font-bold text-brand-teal">{formatSARCompact(item.offerPrice)}</span>
-                    </div>
-                  ))}
-                  <div className="border-t border-gray-200 pt-3 mt-2 flex justify-between items-center">
-                    <span className="font-extrabold text-brand-charcoal text-lg">المجموع الإجمالي</span>
-                    <span className="font-extrabold text-brand-teal text-xl">{formatSARCompact(total)}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Trust Badges */}
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                <div className="flex items-center justify-center gap-2 bg-green-50 text-green-700 px-3 py-2.5 rounded-xl text-xs font-bold border border-green-200 shadow-sm">
-                  <ShieldCheck className="w-4 h-4" /> الدفع عند الاستلام
-                </div>
-                <div className="flex items-center justify-center gap-2 bg-blue-50 text-blue-700 px-3 py-2.5 rounded-xl text-xs font-bold border border-blue-200 shadow-sm">
-                  <Award className="w-4 h-4" /> ضمان ذهبي 30 يوم
-                </div>
+              {/* Compact order summary */}
+              <div className="flex items-center justify-between bg-brand-mint/30 rounded-xl px-4 py-3 mb-5">
+                <span className="text-sm font-medium text-brand-charcoal">
+                  {items.map((i) => i.productName).join(" + ")}
+                </span>
+                <span className="font-extrabold text-brand-teal text-lg">{formatSARCompact(total)}</span>
               </div>
 
               {/* Form */}
-              <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+              <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-bold text-brand-charcoal mb-1.5">
-                    الاسم الكريم
-                  </label>
                   <input
                     id="name"
                     type="text"
                     autoComplete="name"
-                    placeholder="اكتبي اسمك هنا"
+                    placeholder="الاسم الكريم"
                     className="w-full border-2 border-gray-200 rounded-xl px-4 py-3.5 text-brand-charcoal focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 focus:outline-none transition-all text-base"
                     {...register("name")}
                   />
                   {errors.name && (
-                    <p role="alert" className="text-xs text-red-500 font-medium mt-1.5">{errors.name.message}</p>
+                    <p role="alert" className="text-xs text-red-500 font-medium mt-1">{errors.name.message}</p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-bold text-brand-charcoal mb-1.5">
-                    رقم الجوال للتواصل
-                  </label>
                   <input
                     id="phone"
                     type="tel"
                     autoComplete="tel"
-                    placeholder="05XXXXXXXX"
+                    placeholder="رقم الجوال — 05XXXXXXXX"
                     dir="ltr"
                     className="w-full border-2 border-gray-200 rounded-xl px-4 py-3.5 text-brand-charcoal focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 focus:outline-none transition-all text-base text-right"
                     {...register("phone")}
                   />
                   {errors.phone && (
-                    <p role="alert" className="text-xs text-red-500 font-medium mt-1.5">{errors.phone.message}</p>
+                    <p role="alert" className="text-xs text-red-500 font-medium mt-1">{errors.phone.message}</p>
                   )}
                 </div>
 
                 <button
                   type="submit"
                   disabled={step === "submitting"}
-                  className="btn-primary w-full py-4 text-lg font-extrabold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none mt-2"
+                  className="btn-primary w-full py-4 text-lg font-extrabold shadow-lg hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  {step === "submitting" ? "جاري تأكيد الطلب..." : "أكدي الطلب الآن - الدفع عند الاستلام"}
+                  {step === "submitting" ? "جاري تأكيد الطلب..." : `تأكيد الطلب — ${formatSARCompact(total)}`}
                 </button>
 
-                <div className="flex flex-col items-center gap-2 text-xs text-brand-gray font-medium mt-4">
-                  <div className="flex items-center gap-1.5">
-                    <Truck className="w-4 h-4 text-brand-teal" />
-                    <span>توصيل سريع (2-4 أيام عمل)</span>
-                  </div>
-                  <p className="text-center opacity-70">
-                    بياناتك محمية ولن نطلب منك الدفع الآن
-                  </p>
-                </div>
+                <p className="text-center text-xs text-brand-gray opacity-70">
+                  بياناتك محمية ولن نطلب منك الدفع الآن
+                </p>
               </form>
             </div>
           </motion.div>
