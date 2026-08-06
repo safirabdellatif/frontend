@@ -300,10 +300,9 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
               transition={{ duration: 0.5 }}
             >
               {/* Stars + trust */}
-              <h1 className="text-2xl md:text-3xl font-extrabold text-brand-charcoal mb-1 leading-tight">
-                {product.heroHeadline}
+              <h1 className="text-2xl md:text-3xl font-extrabold text-brand-charcoal mb-4 leading-tight">
+                {product.nameAr}
               </h1>
-              <p className="text-brand-gray text-sm mb-4">{product.heroSubheading}</p>
 
               {/* Offer Selector */}
               <div className="mb-4 bg-brand-sand/30 p-4 rounded-2xl border border-brand-sand">
