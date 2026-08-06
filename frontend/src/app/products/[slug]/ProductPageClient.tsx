@@ -239,54 +239,84 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
         </nav>
       </div>
 
-      {/* Hero Section */}
+      {/* Hero Section — image + order form only, no marketing text */}
       <section className="section-padding pt-4">
         <div className="container-max">
-          <div className="grid md:grid-cols-2 gap-12 items-start">
-            {/* Copy */}
+          <div className="grid md:grid-cols-2 gap-10 items-start">
+
+            {/* Product Image */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="relative"
+            >
+              <div className="absolute top-4 right-4 z-10 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg flex items-center gap-2 border border-brand-gold/20">
+                <Award className="w-5 h-5 text-brand-gold" />
+                <span className="font-bold text-sm text-brand-charcoal">ضمان 30 يوم</span>
+              </div>
+              {activeImage ? (
+                <div className="relative h-80 md:h-[480px] rounded-3xl mb-4 shadow-card bg-gradient-to-b from-brand-sand/30 to-white overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={activeImage}
+                    alt={product.imagePlaceholders[0]?.alt ?? product.nameAr}
+                    className="h-full w-full object-contain object-center p-2"
+                  />
+                </div>
+              ) : (
+                <ImagePlaceholder
+                  label={product.imagePlaceholders[0]?.label ?? "صورة المنتج"}
+                  alt={product.imagePlaceholders[0]?.alt ?? product.nameAr}
+                  className="h-80 md:h-[480px] rounded-3xl mb-4 shadow-card"
+                />
+              )}
+              <div className="grid grid-cols-4 gap-2">
+                {(product.galleryImages?.length
+                  ? [{ src: product.mainImage ?? "", alt: product.imagePlaceholders[0]?.alt ?? product.nameAr }, ...product.galleryImages]
+                  : []
+                ).map((img, i) =>
+                  img.src ? (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setActiveImage(img.src)}
+                      className={`h-20 rounded-xl overflow-hidden shadow-soft transition-all ${
+                        activeImage === img.src ? "ring-2 ring-brand-teal" : "hover:opacity-90"
+                      }`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={img.src} alt={img.alt} className="h-full w-full object-cover object-center" />
+                    </button>
+                  ) : null
+                )}
+              </div>
+            </motion.div>
+
+            {/* Order Panel — visible immediately, no scrolling needed */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="order-2 md:order-1"
             >
-              {/* Trust Badge */}
-              <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-3 py-1.5 rounded-full text-xs font-bold mb-4 border border-green-200">
-                <ShieldCheck className="w-4 h-4" />
-                <span>حلال • مكوّنات نشطة واضحة</span>
-              </div>
-
-              {/* Stars */}
-              <div className="flex items-center gap-2 mb-3">
+              {/* Stars + trust */}
+              <div className="flex items-center gap-2 mb-2">
                 <div className="flex items-center gap-0.5">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} className="w-5 h-5 fill-brand-gold text-brand-gold" />
+                  {[1,2,3,4,5].map((i) => (
+                    <Star key={i} className="w-4 h-4 fill-brand-gold text-brand-gold" />
                   ))}
                 </div>
-                <span className="text-sm font-semibold text-brand-charcoal">+4.8 من مئات العملاء في السعودية</span>
+                <span className="text-xs font-semibold text-brand-charcoal">+4.8 من مئات العملاء</span>
               </div>
 
-              <h1 className="text-3xl md:text-5xl font-extrabold text-brand-charcoal mb-4 leading-tight">
+              <h1 className="text-2xl md:text-3xl font-extrabold text-brand-charcoal mb-1 leading-tight">
                 {product.heroHeadline}
               </h1>
-              <p className="text-brand-charcoal font-bold text-xl mb-3">{product.nameAr}</p>
-              <p className="text-brand-gray text-lg leading-relaxed mb-6">{product.heroSubheading}</p>
-
-              {/* Benefits with high conversion icons */}
-              <ul className="space-y-3 mb-8">
-                {product.benefits.slice(0, 4).map((b, i) => (
-                  <li key={i} className="flex items-center gap-3 text-base font-medium text-brand-charcoal">
-                    <span className="w-6 h-6 rounded-full bg-brand-teal/10 flex items-center justify-center flex-shrink-0">
-                      <CheckCircle2 className="w-4 h-4 text-brand-teal" />
-                    </span>
-                    {b}
-                  </li>
-                ))}
-              </ul>
+              <p className="text-brand-gray text-sm mb-4">{product.heroSubheading}</p>
 
               {/* Offer Selector */}
-              <div className="mb-6 bg-brand-sand/30 p-5 rounded-2xl border border-brand-sand">
-                <p className="text-base font-bold text-brand-charcoal mb-4">اختر العرض المناسب لك:</p>
+              <div className="mb-4 bg-brand-sand/30 p-4 rounded-2xl border border-brand-sand">
+                <p className="text-sm font-bold text-brand-charcoal mb-3">اختر العرض المناسب لك:</p>
                 <OfferSelector
                   offers={product.offers}
                   onOfferChange={setSelectedOffer}
@@ -294,7 +324,7 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
               </div>
 
               {/* Inline checkout form */}
-              <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-3 mb-4">
+              <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <input
@@ -327,80 +357,37 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
                   {isSubmitting ? "جاري تأكيد الطلب..." : `اطلب الآن — ${formatSARCompact(selectedOffer.price)}`}
                 </button>
               </form>
-              
-              {/* Trust Under CTA */}
-              <div className="grid grid-cols-2 gap-2 mt-4">
+
+              {/* Trust micro-copy */}
+              <div className="grid grid-cols-2 gap-2 mt-3">
                 <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-brand-gray bg-gray-50 py-2 rounded-lg">
-                  <Truck className="w-4 h-4 text-brand-teal" />
-                  توصيل سريع (2-4 أيام)
+                  <Truck className="w-4 h-4 text-brand-teal" />توصيل 2-4 أيام
                 </div>
                 <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-brand-gray bg-gray-50 py-2 rounded-lg">
-                  <Shield className="w-4 h-4 text-brand-teal" />
-                  ضمان ذهبي 30 يوم
+                  <Shield className="w-4 h-4 text-brand-teal" />ضمان ذهبي 30 يوم
                 </div>
               </div>
             </motion.div>
 
-            {/* Images */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="order-1 md:order-2 relative"
-            >
-              {/* Warranty Badge Overlay */}
-              <div className="absolute top-4 right-4 z-10 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg flex items-center gap-2 border border-brand-gold/20">
-                <Award className="w-5 h-5 text-brand-gold" />
-                <span className="font-bold text-sm text-brand-charcoal">ضمان 30 يوم</span>
-              </div>
-              
-              {activeImage ? (
-                <div className="relative h-80 md:h-[500px] rounded-3xl mb-4 shadow-card bg-gradient-to-b from-brand-sand/30 to-white overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={activeImage}
-                    alt={product.imagePlaceholders[0]?.alt ?? product.nameAr}
-                    className="h-full w-full object-contain object-center p-2"
-                  />
-                </div>
-              ) : (
-                <ImagePlaceholder
-                  label={product.imagePlaceholders[0]?.label ?? "صورة المنتج"}
-                  alt={product.imagePlaceholders[0]?.alt ?? product.nameAr}
-                  className="h-80 md:h-[500px] rounded-3xl mb-4 shadow-card"
-                />
-              )}
-              <div className="grid grid-cols-3 gap-3">
-                {(product.galleryImages?.length
-                  ? [{ src: product.mainImage ?? "", alt: product.imagePlaceholders[0]?.alt ?? product.nameAr }, ...product.galleryImages]
-                  : []
-                ).map((img, i) =>
-                  img.src ? (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => setActiveImage(img.src)}
-                      className={`h-28 rounded-2xl overflow-hidden shadow-soft transition-all ${
-                        activeImage === img.src ? "ring-2 ring-brand-teal" : "hover:opacity-90"
-                      }`}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={img.src} alt={img.alt} className="h-full w-full object-cover object-center" />
-                    </button>
-                  ) : null
-                )}
-                {!product.galleryImages?.length &&
-                  product.imagePlaceholders.slice(1, 4).map((img, i) => (
-                    <ImagePlaceholder
-                      key={i}
-                      label={img.label}
-                      alt={img.alt}
-                      className="h-28 rounded-2xl hover:opacity-90 transition-opacity cursor-pointer shadow-soft"
-                      showBrand={false}
-                    />
-                  ))}
-              </div>
-            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Marketing content — below the fold */}
+      <section className="section-padding pt-4">
+        <div className="container-max">
+          <div className="max-w-2xl mx-auto">
+            {/* Benefits */}
+            <ul className="space-y-3 mb-8">
+              {product.benefits.slice(0, 4).map((b, i) => (
+                <li key={i} className="flex items-center gap-3 text-base font-medium text-brand-charcoal">
+                  <span className="w-6 h-6 rounded-full bg-brand-teal/10 flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-brand-teal" />
+                  </span>
+                  {b}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
