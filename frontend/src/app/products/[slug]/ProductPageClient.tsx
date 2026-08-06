@@ -255,49 +255,52 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
                 {product.nameAr}
               </h1>
 
-              {/* Offer Selector */}
-              <div className="mb-4 bg-brand-sand/30 p-4 rounded-2xl border border-brand-sand">
-                <p className="text-sm font-bold text-brand-charcoal mb-3">اختر العرض المناسب لك:</p>
-                <OfferSelector
-                  offers={product.offers}
-                  onOfferChange={setSelectedOffer}
-                />
-              </div>
-
-              {/* Inline checkout form */}
-              <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-3">
-                <div className="grid grid-cols-2 gap-3 border-2 border-brand-teal rounded-2xl p-3 bg-brand-teal/5">
-                  <div>
-                    <input
-                      type="text"
-                      autoComplete="name"
-                      placeholder="الاسم الكريم"
-                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-brand-charcoal focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 focus:outline-none transition-all text-base"
-                      {...register("name")}
-                    />
-                    {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
-                  </div>
-                  <div>
-                    <input
-                      type="tel"
-                      autoComplete="tel"
-                      placeholder="05XXXXXXXX"
-                      dir="ltr"
-                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-brand-charcoal focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 focus:outline-none transition-all text-base text-right"
-                      {...register("phone")}
-                    />
-                    {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone.message}</p>}
-                  </div>
+              {/* Order box — green border wraps offer selector + inputs + button */}
+              <div className="border-2 border-brand-teal rounded-2xl p-4 bg-brand-teal/5 space-y-3">
+                {/* Offer Selector */}
+                <div>
+                  <p className="text-sm font-bold text-brand-charcoal mb-3">اختر العرض المناسب لك:</p>
+                  <OfferSelector
+                    offers={product.offers}
+                    onOfferChange={setSelectedOffer}
+                  />
                 </div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="btn-primary w-full py-4 text-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  <ShoppingBag className="w-6 h-6" />
-                  {isSubmitting ? "جاري تأكيد الطلب..." : `اطلب الآن — ${formatSARCompact(selectedOffer.price)}`}
-                </button>
-              </form>
+
+                {/* Inline checkout form */}
+                <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <input
+                        type="text"
+                        autoComplete="name"
+                        placeholder="الاسم الكريم"
+                        className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-brand-charcoal focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 focus:outline-none transition-all text-base"
+                        {...register("name")}
+                      />
+                      {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
+                    </div>
+                    <div>
+                      <input
+                        type="tel"
+                        autoComplete="tel"
+                        placeholder="05XXXXXXXX"
+                        dir="ltr"
+                        className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-brand-charcoal focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 focus:outline-none transition-all text-base text-right"
+                        {...register("phone")}
+                      />
+                      {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone.message}</p>}
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="btn-primary w-full py-4 text-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    <ShoppingBag className="w-6 h-6" />
+                    {isSubmitting ? "جاري تأكيد الطلب..." : `اطلب الآن — ${formatSARCompact(selectedOffer.price)}`}
+                  </button>
+                </form>
+              </div>
 
               {/* Trust micro-copy */}
               <div className="grid grid-cols-2 gap-2 mt-3">
