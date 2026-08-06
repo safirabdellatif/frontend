@@ -734,7 +734,7 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
           </div>
           
           <button
-            onClick={handleAddToCart}
+            onClick={handleStickyOrder}
             className="bg-brand-gold text-brand-charcoal font-extrabold py-5 rounded-2xl hover:bg-yellow-400 transition-colors w-full text-lg flex items-center justify-center gap-3 shadow-xl transform hover:-translate-y-1"
           >
             <ShoppingBag className="w-6 h-6" />
