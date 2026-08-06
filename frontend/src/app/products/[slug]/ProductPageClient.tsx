@@ -265,8 +265,8 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
               </div>
 
               {/* Inline checkout form */}
-              <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-3 border-2 border-brand-teal rounded-2xl p-4 bg-brand-teal/5">
-                <div className="grid grid-cols-2 gap-3">
+              <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-3">
+                <div className="grid grid-cols-2 gap-3 border-2 border-brand-teal rounded-2xl p-3 bg-brand-teal/5">
                   <div>
                     <input
                       type="text"
