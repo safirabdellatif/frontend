@@ -300,15 +300,6 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
               transition={{ duration: 0.5 }}
             >
               {/* Stars + trust */}
-              <div className="flex items-center gap-2 mb-2">
-                <div className="flex items-center gap-0.5">
-                  {[1,2,3,4,5].map((i) => (
-                    <Star key={i} className="w-4 h-4 fill-brand-gold text-brand-gold" />
-                  ))}
-                </div>
-                <span className="text-xs font-semibold text-brand-charcoal">+4.8 من مئات العملاء</span>
-              </div>
-
               <h1 className="text-2xl md:text-3xl font-extrabold text-brand-charcoal mb-1 leading-tight">
                 {product.heroHeadline}
               </h1>
