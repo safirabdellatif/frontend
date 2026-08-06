@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { motion } from "framer-motion";
 import { Star, ShoppingBag, ShieldCheck, ChevronLeft, Award, CheckCircle2, HeartHandshake, Shield, Truck, Clock, Droplets, Coffee, Smile, CalendarDays } from "lucide-react";
 import Link from "next/link";
@@ -8,6 +11,9 @@ import type { Product, ProductOffer } from "@/content/products";
 import { PRODUCTS } from "@/content/products";
 import { useCartStore } from "@/stores/cart-store";
 import { useCheckoutStore } from "@/stores/checkout-store";
+import { isValidSaudiPhone } from "@/lib/phone";
+import { createOrder } from "@/lib/api";
+import { getStoredAttribution } from "@/lib/attribution";
 import { OfferSelector } from "@/components/product/OfferSelector";
 import { StickyProductCTA } from "@/components/product/StickyProductCTA";
 import { ImagePlaceholder } from "@/components/product/ImagePlaceholder";
@@ -18,8 +24,14 @@ import { TrustStrip } from "@/components/trust/TrustStrip";
 import { REVIEWS } from "@/content/reviews";
 import { FAQS } from "@/content/faqs";
 import { formatSARCompact } from "@/lib/money";
-import { generateEventId } from "@/lib/events";
-import { trackAddToCart, trackViewContent } from "@/lib/analytics";
+import { generateEventId, generateSessionId } from "@/lib/events";
+import { trackAddToCart, trackViewContent, trackPurchase } from "@/lib/analytics";
+
+const checkoutSchema = z.object({
+  name: z.string().min(2, "الاسم قصير جدًا").max(80).refine((v) => !/^\d+$/.test(v), "الاسم لا يمكن أن يكون أرقامًا فقط"),
+  phone: z.string().refine(isValidSaudiPhone, "فضلاً أدخلي رقم جوال سعودي صحيح"),
+});
+type CheckoutForm = z.infer<typeof checkoutSchema>;
 
 interface ProductPageClientProps {
   product: Product;
@@ -149,12 +161,16 @@ const USAGE_PROTOCOL: Record<string, UsageProtocol> = {
 };
 
 export function ProductPageClient({ product }: ProductPageClientProps) {
-  const { addItem } = useCartStore();
-  const { setStep } = useCheckoutStore();
+  const { addItem, clearCart } = useCartStore();
+  const { setStep, setOrderResult, setError } = useCheckoutStore();
   const defaultOffer = product.offers.find((o) => o.defaultSelected) ?? product.offers[0];
   const [selectedOffer, setSelectedOffer] = useState<ProductOffer>(defaultOffer);
   const [showSticky, setShowSticky] = useState(false);
   const [activeImage, setActiveImage] = useState(product.mainImage ?? "");
+
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CheckoutForm>({
+    resolver: zodResolver(checkoutSchema),
+  });
 
   useEffect(() => {
     trackViewContent(product.id, selectedOffer.price);
@@ -163,19 +179,45 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [product.id]);
 
-  const handleAddToCart = () => {
-    const eventId = generateEventId("AddToCart");
-    addItem({
+  const onSubmit = async (data: CheckoutForm) => {
+    const eventId = generateEventId("Purchase");
+    const sessionId = generateSessionId();
+    const attribution = getStoredAttribution();
+    const cartItem = {
       productId: product.id,
       productName: product.nameAr,
       quantity: selectedOffer.quantity,
       unitBundlePrice: selectedOffer.price,
       offerPrice: selectedOffer.price,
       offerLabel: selectedOffer.label,
-      source: "product_page",
-    });
-    trackAddToCart(product.id, selectedOffer.price, eventId);
-    setStep("form");
+      source: "product_page" as const,
+    };
+    addItem(cartItem);
+    trackAddToCart(product.id, selectedOffer.price, generateEventId("AddToCart"));
+    setStep("submitting");
+    try {
+      const result = await createOrder({
+        customer: { name: data.name, phone: data.phone },
+        cart: { items: [cartItem], total: selectedOffer.price, currency: "SAR" },
+        attribution,
+        analytics: { eventId, sessionId, userAgent: navigator.userAgent },
+      });
+      clearCart();
+      setOrderResult({
+        orderId: result.orderId,
+        orderNumber: result.orderNumber,
+        total: result.total,
+        items: [{ productId: product.id, productName: product.nameAr, quantity: selectedOffer.quantity, price: selectedOffer.price }],
+        upsell: result.upsell,
+      });
+      trackPurchase(result.orderId, `purchase_${eventId}`, result.total, [product.id]);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "صار خطأ مؤقت. حاولي مرة ثانية بعد لحظات.");
+    }
+  };
+
+  const handleStickyOrder = () => {
+    handleSubmit(onSubmit)();
   };
 
   const productReviews = REVIEWS.filter(
@@ -251,15 +293,40 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
                 />
               </div>
 
-              {/* CTA */}
-              <button
-                onClick={handleAddToCart}
-                className="btn-primary w-full py-4 text-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
-              >
-                <ShoppingBag className="w-6 h-6" />
-                اطلب الآن — ثقة تبدأ من إطلالتك
-                <span className="font-extrabold bg-white/20 px-2 py-1 rounded-lg">{formatSARCompact(selectedOffer.price)}</span>
-              </button>
+              {/* Inline checkout form */}
+              <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-3 mb-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <input
+                      type="text"
+                      autoComplete="name"
+                      placeholder="الاسم الكريم"
+                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-brand-charcoal focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 focus:outline-none transition-all text-base"
+                      {...register("name")}
+                    />
+                    {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
+                  </div>
+                  <div>
+                    <input
+                      type="tel"
+                      autoComplete="tel"
+                      placeholder="05XXXXXXXX"
+                      dir="ltr"
+                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-brand-charcoal focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10 focus:outline-none transition-all text-base text-right"
+                      {...register("phone")}
+                    />
+                    {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone.message}</p>}
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="btn-primary w-full py-4 text-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  <ShoppingBag className="w-6 h-6" />
+                  {isSubmitting ? "جاري تأكيد الطلب..." : `اطلب الآن — ${formatSARCompact(selectedOffer.price)}`}
+                </button>
+              </form>
               
               {/* Trust Under CTA */}
               <div className="grid grid-cols-2 gap-2 mt-4">
@@ -712,7 +779,7 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
       <StickyProductCTA
         productName={product.nameAr}
         selectedOffer={selectedOffer}
-        onAddToCart={handleAddToCart}
+        onAddToCart={handleStickyOrder}
         visible={showSticky}
       />
     </>
