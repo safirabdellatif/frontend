@@ -239,67 +239,18 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
         </nav>
       </div>
 
-      {/* Hero Section — image + order form only, no marketing text */}
+      {/* Hero Section — order form first on mobile, image on right on desktop */}
       <section className="section-padding pt-4">
         <div className="container-max">
           <div className="grid md:grid-cols-2 gap-10 items-start">
 
-            {/* Product Image */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              className="relative"
-            >
-              <div className="absolute top-4 right-4 z-10 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg flex items-center gap-2 border border-brand-gold/20">
-                <Award className="w-5 h-5 text-brand-gold" />
-                <span className="font-bold text-sm text-brand-charcoal">ضمان 30 يوم</span>
-              </div>
-              {activeImage ? (
-                <div className="relative h-80 md:h-[480px] rounded-3xl mb-4 shadow-card bg-gradient-to-b from-brand-sand/30 to-white overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={activeImage}
-                    alt={product.imagePlaceholders[0]?.alt ?? product.nameAr}
-                    className="h-full w-full object-contain object-center p-2"
-                  />
-                </div>
-              ) : (
-                <ImagePlaceholder
-                  label={product.imagePlaceholders[0]?.label ?? "صورة المنتج"}
-                  alt={product.imagePlaceholders[0]?.alt ?? product.nameAr}
-                  className="h-80 md:h-[480px] rounded-3xl mb-4 shadow-card"
-                />
-              )}
-              <div className="grid grid-cols-4 gap-2">
-                {(product.galleryImages?.length
-                  ? [{ src: product.mainImage ?? "", alt: product.imagePlaceholders[0]?.alt ?? product.nameAr }, ...product.galleryImages]
-                  : []
-                ).map((img, i) =>
-                  img.src ? (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => setActiveImage(img.src)}
-                      className={`h-20 rounded-xl overflow-hidden shadow-soft transition-all ${
-                        activeImage === img.src ? "ring-2 ring-brand-teal" : "hover:opacity-90"
-                      }`}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={img.src} alt={img.alt} className="h-full w-full object-cover object-center" />
-                    </button>
-                  ) : null
-                )}
-              </div>
-            </motion.div>
-
-            {/* Order Panel — visible immediately, no scrolling needed */}
+            {/* Order Panel — first in DOM = first on mobile */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
+              className="order-1 md:order-2"
             >
-              {/* Stars + trust */}
               <h1 className="text-2xl md:text-3xl font-extrabold text-brand-charcoal mb-4 leading-tight">
                 {product.nameAr}
               </h1>
@@ -356,6 +307,55 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
                 <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-brand-gray bg-gray-50 py-2 rounded-lg">
                   <Shield className="w-4 h-4 text-brand-teal" />ضمان ذهبي 30 يوم
                 </div>
+              </div>
+            </motion.div>
+
+            {/* Product Image — second on mobile, left on desktop */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="order-2 md:order-1 relative"
+            >
+              <div className="absolute top-4 right-4 z-10 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg flex items-center gap-2 border border-brand-gold/20">
+                <Award className="w-5 h-5 text-brand-gold" />
+                <span className="font-bold text-sm text-brand-charcoal">ضمان 30 يوم</span>
+              </div>
+              {activeImage ? (
+                <div className="relative h-64 md:h-[480px] rounded-3xl mb-3 shadow-card bg-gradient-to-b from-brand-sand/30 to-white overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={activeImage}
+                    alt={product.imagePlaceholders[0]?.alt ?? product.nameAr}
+                    className="h-full w-full object-contain object-center p-2"
+                  />
+                </div>
+              ) : (
+                <ImagePlaceholder
+                  label={product.imagePlaceholders[0]?.label ?? "صورة المنتج"}
+                  alt={product.imagePlaceholders[0]?.alt ?? product.nameAr}
+                  className="h-64 md:h-[480px] rounded-3xl mb-3 shadow-card"
+                />
+              )}
+              <div className="grid grid-cols-4 gap-2">
+                {(product.galleryImages?.length
+                  ? [{ src: product.mainImage ?? "", alt: product.imagePlaceholders[0]?.alt ?? product.nameAr }, ...product.galleryImages]
+                  : []
+                ).map((img, i) =>
+                  img.src ? (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setActiveImage(img.src)}
+                      className={`h-16 rounded-xl overflow-hidden shadow-soft transition-all ${
+                        activeImage === img.src ? "ring-2 ring-brand-teal" : "hover:opacity-90"
+                      }`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={img.src} alt={img.alt} className="h-full w-full object-cover object-center" />
+                    </button>
+                  ) : null
+                )}
               </div>
             </motion.div>
 
